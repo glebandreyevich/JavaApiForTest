@@ -4,9 +4,9 @@ import io.restassured.response.Response;
 public class HelloWorld {
 
     @Test
-    public void HelloWorld() {
+    public void ApiGetTest() {
         Response response = RestAssured
-                .get("https://playground.learnqa.ru/api/hello")
+                .get("https://playground.learnqa.ru/api/get_text")
                 .andReturn();
                 response.prettyPrint();
 
