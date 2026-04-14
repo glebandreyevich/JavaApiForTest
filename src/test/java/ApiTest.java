@@ -25,4 +25,20 @@ public class ApiTest {
         String secondMessage = jsonPath.getString("messages[1].message");
         System.out.println("Second message: " + secondMessage);
     }
+   //Редирект
+    @Test
+    public void Redirect()
+    {
+        String url = "https://playground.learnqa.ru/api/long_redirect";
+        Response response = RestAssured
+                .given()
+                .redirects()
+                .follow(false)
+                .when()
+                .get(url);
+                String location = response.getHeader("Location");
+                System.out.println("Redirect " + location);
+    }
+
+
 }
