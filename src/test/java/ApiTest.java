@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ApiTest {
 
@@ -61,6 +62,33 @@ public class ApiTest {
                 System.out.println(url);
             }
         }
+    }
+    //Токены
+    @Test
+    public void TokenTest() throws InterruptedException {
+        String url = "https://playground.learnqa.ru/ajax/api/longtime_job";
+        Response tokenresponse = RestAssured
+                .get(url);
+        String token = tokenresponse.jsonPath().getString("token");
+        int waitSecond = tokenresponse.jsonPath().getInt("seconds");
+        Response responseBefore = RestAssured
+                .given()
+                .queryParam("token",token)
+                .get(url);
+        String statusBefore = responseBefore.jsonPath().getString("status");
+        System.out.println(statusBefore);
+        assertNotEquals("Job is ready",statusBefore);
+        Thread.sleep(waitSecond * 1000L);
+        Response responseAfter = RestAssured
+                .given()
+                .queryParam("token",token)
+                .get(url);
+        String statusAfter = responseAfter.jsonPath().getString("status");
+        String resultAfter = responseAfter.jsonPath().getString("result");
+        System.out.println(statusAfter);
+        System.out.println(resultAfter);
+        assertEquals ("Job is ready", statusAfter);
+        assertEquals("42",resultAfter);
     }
 
 
