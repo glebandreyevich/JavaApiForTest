@@ -39,6 +39,29 @@ public class ApiTest {
                 String location = response.getHeader("Location");
                 System.out.println("Redirect " + location);
     }
+    //Долгий редирект
+    @Test
+    public void RecursRedirect()
+    {
+        String url = "https://playground.learnqa.ru/api/long_redirect";
+        while (true) {
+            Response response = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .when()
+                    .get(url);
+            int statusCode = response.getStatusCode();
+            if (statusCode == 200) {
+                System.out.println("OK:" + statusCode);
+                break;
+            }
+            else if (statusCode==301) {
+                url = response.getHeader("Location");
+                System.out.println(url);
+            }
+        }
+    }
 
 
 }
