@@ -15,4 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ApiTest {
 
+    //Парсинг Json
+    @Test
+    public void JsonParsing() {
+        String url = "https://playground.learnqa.ru/api/get_json_homework";
+        JsonPath jsonPath = RestAssured
+                .get(url)
+                .jsonPath();
+        String secondMessage = jsonPath.getString("messages[1].message");
+        System.out.println("Second message: " + secondMessage);
+    }
 }
