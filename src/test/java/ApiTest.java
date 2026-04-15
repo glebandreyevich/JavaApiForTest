@@ -1,14 +1,10 @@
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 
-
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,10 +22,10 @@ public class ApiTest {
         String secondMessage = jsonPath.getString("messages[1].message");
         System.out.println("Second message: " + secondMessage);
     }
-   //Редирект
+
+    //Редирект
     @Test
-    public void Redirect()
-    {
+    public void Redirect() {
         String url = "https://playground.learnqa.ru/api/long_redirect";
         Response response = RestAssured
                 .given()
@@ -37,13 +33,13 @@ public class ApiTest {
                 .follow(false)
                 .when()
                 .get(url);
-                String location = response.getHeader("Location");
-                System.out.println("Redirect " + location);
+        String location = response.getHeader("Location");
+        System.out.println("Redirect " + location);
     }
+
     //Долгий редирект
     @Test
-    public void RecursRedirect()
-    {
+    public void RecursRedirect() {
         String url = "https://playground.learnqa.ru/api/long_redirect";
         while (true) {
             Response response = RestAssured
@@ -56,13 +52,13 @@ public class ApiTest {
             if (statusCode == 200) {
                 System.out.println("OK:" + statusCode);
                 break;
-            }
-            else if (statusCode==301) {
+            } else if (statusCode == 301) {
                 url = response.getHeader("Location");
                 System.out.println(url);
             }
         }
     }
+
     //Токены
     @Test
     public void TokenTest() throws InterruptedException {
@@ -73,23 +69,64 @@ public class ApiTest {
         int waitSecond = tokenresponse.jsonPath().getInt("seconds");
         Response responseBefore = RestAssured
                 .given()
-                .queryParam("token",token)
+                .queryParam("token", token)
                 .get(url);
         String statusBefore = responseBefore.jsonPath().getString("status");
         System.out.println(statusBefore);
-        assertNotEquals("Job is ready",statusBefore);
+        assertNotEquals("Job is ready", statusBefore);
         Thread.sleep(waitSecond * 1000L);
         Response responseAfter = RestAssured
                 .given()
-                .queryParam("token",token)
+                .queryParam("token", token)
                 .get(url);
         String statusAfter = responseAfter.jsonPath().getString("status");
         String resultAfter = responseAfter.jsonPath().getString("result");
         System.out.println(statusAfter);
         System.out.println(resultAfter);
-        assertEquals ("Job is ready", statusAfter);
-        assertEquals("42",resultAfter);
+        assertEquals("Job is ready", statusAfter);
+        assertEquals("42", resultAfter);
     }
 
+    //Подбор пароля
+    @Test
+    public void passwordBrute() {
+        JsonPath jsonPath = RestAssured
+                .given()
+                .header("User-Agent", "Test")
+                .queryParam("table", "1")
+                .when()
+                .get("https://www.wikitable2json.com/api/List_of_the_most_common_passwords").jsonPath();
+
+        List<List<String>> table = jsonPath.getList("[0]");
+        Set<String> passwords = new HashSet<>();
+
+        for (int i = 1; i < table.size(); i++) {
+            List<String> row = table.get(i);
+            for (int j = 1; j < row.size(); j++) {
+                String password = row.get(j);
+                password = password.replaceAll("[^a-zA-Z0-9]", "");
+                passwords.add(password);
+            }
+        }
+
+        for (String password : passwords) {
+            Response responsePass = RestAssured
+                    .given()
+                    .queryParam("login", "super_admin")
+                    .queryParam("password", password)
+                    .when()
+                    .get("https://playground.learnqa.ru/ajax/api/get_secret_password_homework");
+            String authCookie = responsePass.getCookie("auth_cookie");
+            Response responseCookie = RestAssured
+                    .given()
+                    .cookie("auth_cookie", authCookie)
+                    .get("https://playground.learnqa.ru/ajax/api/check_auth_cookie");
+            String status = (responseCookie.getBody().asString());
+            if (status.equals("You are authorized")) {
+                System.out.println("Ваш пароль: " + password);
+                break;
+            }
+        }
+    }
 
 }
