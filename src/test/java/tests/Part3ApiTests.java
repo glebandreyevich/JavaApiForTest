@@ -22,4 +22,11 @@ public class Part3ApiTests extends BaseTestCase {
         String randomLenghtText = new String(new char[lenghtText]).replace("\0", "a");
         assertTrue(randomLenghtText.length() > 15, "Expected Text length > 15, but it was only: " + randomLenghtText.length());
     }
+    //Cookie
+    @Test
+    public void CookieTest() {
+        Response responseCookie = RestAssured
+                .get("https://playground.learnqa.ru/api/homework_cookie");
+        assertEquals("hw_value", getCookie(responseCookie, "HomeWork"), "Cookie has wrong value");
+    }
 }
