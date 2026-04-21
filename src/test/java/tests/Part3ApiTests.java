@@ -29,4 +29,13 @@ public class Part3ApiTests extends BaseTestCase {
                 .get("https://playground.learnqa.ru/api/homework_cookie");
         assertEquals("hw_value", getCookie(responseCookie, "HomeWork"), "Cookie has wrong value");
     }
+    //Header
+    @Test
+    public void HeaderTest() {
+        Response responseHeader = RestAssured
+                .get("https://playground.learnqa.ru/api/homework_header");
+        assertEquals("Some secret value",
+                getHeader(responseHeader, "x-secret-homework-header"),
+                "Header 'x-secret-homework-header' has wrong value");
+    }
 }
