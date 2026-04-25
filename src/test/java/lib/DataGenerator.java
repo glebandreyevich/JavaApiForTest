@@ -1,17 +1,25 @@
 package lib;
-
-import freemarker.template.SimpleDate;
-
-import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class DataGenerator {
     public static  String getRandomEmail(){
         String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
         return "learnqa" + timestamp + "@example.com";
     }
+    public static String getUserNameWithLenght(int length){
+        String letters = "abcdefghijklmnopqrstuvwxyz";
+        Random random = new Random();
+        String name = "";
+        for (int i = 0; i < length; i++) {
+            name += letters.charAt(random.nextInt(letters.length()));
+        }
+        return name;
+    }
+
+
     public static Map<String,String> getRegistrationData(){
         Map<String,String> data = new HashMap<>();
         data.put("email", DataGenerator.getRandomEmail());
