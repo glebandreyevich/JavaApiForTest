@@ -64,7 +64,7 @@ public class UserEditTest extends BaseTestCase {
         Response responseCreateAuth = apiCoreRequests.makePostRequest("https://playground.learnqa.ru/api/user/", userData);
         String userId = responseCreateAuth.jsonPath().getString("id");
         Response responseEditUser = apiCoreRequests.makePutRequest("https://playground.learnqa.ru/api/user/" + userId, userData);
-        Assertions.assertResponseTextEquals(responseEditUser, "{\"error\":\"Auth token not supplied\"}");
+        Assertions.assertJsonByName(responseEditUser,"error","Auth token not supplied");
     }
     @Description("Negative test: verifies that authenticated user cannot update another user's data")
     @DisplayName("Update another user's data while authenticated as different user")
@@ -83,7 +83,7 @@ public class UserEditTest extends BaseTestCase {
         Response EditResponse = apiCoreRequests.makePutRequestWithTokenCookie("https://playground.learnqa.ru/api/user/" + userId, newDataForEdit,
                 this.getHeader(AuthResponse, "x-csrf-token"),
                 this.getCookie(AuthResponse, "auth_sid"));
-        Assertions.assertResponseTextEquals(EditResponse, "{\"error\":\"This user can only edit their own data.\"}");
+        Assertions.assertJsonByName(EditResponse,"error","This user can only edit their own data.");
     }
     @Description("Negative test: verifies that user cannot update email address with invalid format (missing '@') even when authenticated")
     @DisplayName("Update own email to address without '@'")
@@ -101,7 +101,7 @@ public class UserEditTest extends BaseTestCase {
         Response EditResponse = apiCoreRequests.makePutRequestWithTokenCookie("https://playground.learnqa.ru/api/user/" + userId, newDataForEdit,
                 this.getHeader(AuthResponse, "x-csrf-token"),
                 this.getCookie(AuthResponse, "auth_sid"));
-        Assertions.assertResponseTextEquals(EditResponse,"{\"error\":\"Invalid email format\"}");
+        Assertions.assertJsonByName(EditResponse,"error","Invalid email format");
     }
     @Description("Negative test: verifies that user cannot update firstName with value that is too short even when authenticated")
     @DisplayName("Update own firstName to single character")
@@ -119,6 +119,6 @@ public class UserEditTest extends BaseTestCase {
         Response EditResponse = apiCoreRequests.makePutRequestWithTokenCookie("https://playground.learnqa.ru/api/user/" + userId, newDataForEdit,
                 this.getHeader(AuthResponse, "x-csrf-token"),
                 this.getCookie(AuthResponse, "auth_sid"));
-        Assertions.assertResponseTextEquals(EditResponse,"{\"error\":\"The value for field `firstName` is too short\"}");
+        Assertions.assertJsonByName(EditResponse,"error","The value for field `firstName` is too short");
     }
 }
