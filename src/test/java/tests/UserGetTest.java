@@ -1,17 +1,22 @@
 package tests;
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Epic("Управление пользователями")
+@Feature("Получение данных")
+@Story("Получение данных пользователя")
+@Tag("Api")
+@Owner("QA")
 public class UserGetTest extends BaseTestCase{
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
     private static final String baseUrl = "https://playground.learnqa.ru/api_dev/";
@@ -50,6 +55,7 @@ public class UserGetTest extends BaseTestCase{
     //Ex16: Запрос данных другого пользователя
     @Description("Negative test: verifies that authenticated user cannot see full data of another user - only username is returned")
     @DisplayName("Get another user data while authenticated only username visible")
+    @Attachment("")
     @Test
     public void RequestForAnotherUserTest(){
         Map<String, String> authData = new HashMap<>();

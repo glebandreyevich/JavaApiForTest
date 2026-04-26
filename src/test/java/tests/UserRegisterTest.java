@@ -1,10 +1,12 @@
 package tests;
 
 import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.*;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,11 +14,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-
+@Epic("Управление пользователями")
+@Feature("Регистрация")
+@Tag("Api")
+@Owner("QA")
 public class UserRegisterTest extends BaseTestCase {
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
     private static final String baseUrl = "https://playground.learnqa.ru/api_dev/";
     @Test
+    @Story("Создание пользователя с существующим email")
     public void testCreateUserWithExistingEmail(){
         String email ="vinkotov@examle.com";
         Map<String,String> userData = new HashMap<>();
@@ -32,6 +38,8 @@ public class UserRegisterTest extends BaseTestCase {
 
     }
     @Test
+    @Severity(SeverityLevel.BLOCKER)
+    @Story("Успешное создание пользователя")
     public void testCreateUserSuccesfully(){
         Map<String,String> userData = DataGenerator.getRegistrationData();
         Response responseCreateAuth = RestAssured.given()
@@ -44,6 +52,7 @@ public class UserRegisterTest extends BaseTestCase {
     //Ex15: Тесты на метод user
     @Description("Negative test: checks if it’s possible to create a user without an '@' in the email address")
     @DisplayName("Test User Creation without '@' in the email")
+    @Story("Создание пользователя без @ в почте")
     @Test
     public void testCreateUserWithIncorrectEmail(){
         Map<String,String> userData = DataGenerator.getRegistrationData();
@@ -54,6 +63,7 @@ public class UserRegisterTest extends BaseTestCase {
 
     @Description("Negative test: checks if it’s possible to create a user with short name")
     @DisplayName("Test User Creation with short name")
+    @Story("Создание пользователя с коротким именем")
     @Test
     public void testCreateUserWithShortUserName(){
         Map<String,String> userData = DataGenerator.getRegistrationData();
@@ -64,6 +74,7 @@ public class UserRegisterTest extends BaseTestCase {
 
     @Description("Negative test: checks if it’s possible to create a user with long name")
     @DisplayName("Test User Creation with long name")
+    @Story("Создание пользователя с длинным именем")
     @Test
     public void testCreateUserWithLongUserName(){
         Map<String,String> userData = DataGenerator.getRegistrationData();
@@ -78,7 +89,7 @@ public class UserRegisterTest extends BaseTestCase {
     @ParameterizedTest
     @MethodSource("removeField")
     @Description("Negative test: verifies that user cannot be created when one of required parameters is missing")
-    @DisplayName("Test User Creation without required parameters")
+    @Story("Создание пользователя без одного из обязательных параметров")
     public void TestCreateUserWithDeleteField(String removeField){
         Map<String,String> userData = DataGenerator.getRegistrationData();
         userData.remove(removeField);

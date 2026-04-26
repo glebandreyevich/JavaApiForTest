@@ -1,16 +1,21 @@
 package tests;
 
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lib.*;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-
+@Epic("Управление пользователями")
+@Feature("Редактирование")
+@Story("Редактирование пользователя")
+@Tag("Api")
+@Owner("QA")
 public class UserEditTest extends BaseTestCase {
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
     private static final String baseUrl = "https://playground.learnqa.ru/api_dev/";

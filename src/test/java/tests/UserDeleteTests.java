@@ -1,18 +1,23 @@
 package tests;
 
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Epic("Управление пользователями")
+@Feature("Удаление")
+@Story("Удаление пользователя")
+@Tag("Api")
+@Owner("QA")
 public class UserDeleteTests extends BaseTestCase {
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
     private static String baseUrl = "https://playground.learnqa.ru/api_dev/";
@@ -52,6 +57,10 @@ public class UserDeleteTests extends BaseTestCase {
     }
     @Description("Negative test: Try to delete a user while being authenticated as another user")
     @DisplayName("Delete user as different user")
+    @Link("Link-to-some-information")
+    @TmsLink("Link-to-test case")
+    @Issue("Link-to-bug")
+    @Severity(SeverityLevel.CRITICAL)
     @Test
     public void DeleteUserCheck(){
         Map<String, String> newUserForDelete = DataGenerator.getRegistrationData();
